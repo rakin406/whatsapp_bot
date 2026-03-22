@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Usage: ./main.py <group-link>
+Usage: ./main.py <model-name> <group-link>
 """
 
 import os
@@ -9,28 +9,17 @@ import time
 import platform
 import re
 
-from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver as ChromeDriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from google import genai
+from ollama import chat
+from ollama import ChatResponse
 from loguru import logger
 
-load_dotenv()
-
+# TODO: Allow user to set a custom greeting.
 GREET_MESSAGE = "Hello, I am a chatbot made by Rakin Rahman. You can call me RakinBot."
-
-PROMPT = """
-You are a chatbot named RakinBot, created by Rakin Rahman.
-You are friendly, casual, and funny.
-Always reply to the user’s messages in a chatty, humorous way, but keep answers helpful and clear.
-Feel free to add jokes, puns, or witty comments naturally, like a friend talking to you.
-Keep your replies concise, engaging, and easy to read.
-Do not use emojis.
-Remember previous messages in the conversation and refer back to them when relevant.
-"""
 
 
 def get_group_code(group_link: str) -> str | None:
@@ -53,11 +42,11 @@ def get_user_data_dir() -> str | None:
     return user_data_dir
 
 
-def get_last_message(driver: ChromeDriver) -> str:
+def get_last_message(driver: ChromeDriver) -> str | None:
     messages = driver.find_elements(
         By.CSS_SELECTOR, "div.message-in span[data-testid='selectable-text']"
     )
-    return messages[-1].text
+    return messages[-1].text if messages else None
 
 
 def send_message(driver: ChromeDriver, message: str):
@@ -74,11 +63,12 @@ def send_message(driver: ChromeDriver, message: str):
 
 
 def main():
-    if len(sys.argv) <= 1:
-        print("Please give the group link.")
+    if len(sys.argv) <= 2:
+        print("Please provide the necessary info.")
         sys.exit(1)
 
-    group_link = sys.argv[1]
+    model_name = sys.argv[1]
+    group_link = sys.argv[2]
     code = get_group_code(group_link)
     user_data_dir = get_user_data_dir()
 
@@ -89,15 +79,6 @@ def main():
     if not user_data_dir:
         print("Could not retrieve user data")
         sys.exit(3)
-
-    # Create Gemini client
-    logger.debug("Initializing Gemini chat session")
-    client = genai.Client()
-    chat = client.chats.create(
-        model="gemini-2.5-flash",
-        history=[{"role": "user", "parts": [{"text": PROMPT}]}],
-    )
-    logger.info("Initialized Gemini chat session")
 
     # Set Chromium options
     options = Options()
@@ -138,14 +119,22 @@ def main():
     while True:
         msg = get_last_message(driver)
 
-        if msg == last_msg:
+        if not msg or msg == last_msg:
             time.sleep(1)
             continue
 
-        response = chat.send_message(msg)
+        response: ChatResponse = chat(
+            model=model_name,
+            messages=[
+                {
+                    "role": "user",
+                    "content": msg,
+                },
+            ],
+        )
 
-        if response.text:
-            send_message(driver, response.text)
+        if response.message.content:
+            send_message(driver, response.message.content)
 
         last_msg = msg
         time.sleep(1)
