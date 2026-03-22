@@ -62,7 +62,7 @@ def get_last_message(driver: ChromeDriver) -> str:
 def send_message(driver: ChromeDriver, message: str):
     textarea = driver.find_element(
         By.CSS_SELECTOR,
-        "#main > footer > div.x1n2onr6.xhtitgo.x9f619.x78zum5.x1q0g3np.xuk3077.xjbqb8w.x1wiwyrm.xquzyny.xvc5jky.x11t971q.xnpuxes.copyable-area > div > span > div > div > div > div.x1n2onr6.xh8yej3.xjdcl3y.lexical-rich-text-input > div.x1hx0egp.x6ikm8r.x1odjw0f.x1k6rcq7.x6prxxf",
+        "#main > footer > div.x1n2onr6 > div > span > div > div > div > div.x1n2onr6 > div",
     )
     textarea.clear()
     textarea.send_keys(message + Keys.ENTER)
