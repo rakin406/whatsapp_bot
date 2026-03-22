@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Usage: ./main.py <group-link>
+Usage: ./main.py <model-name> <group-link>
 """
 
 import os
@@ -63,11 +63,12 @@ def send_message(driver: ChromeDriver, message: str):
 
 
 def main():
-    if len(sys.argv) <= 1:
-        print("Please give the group link.")
+    if len(sys.argv) <= 2:
+        print("Please provide the necessary info.")
         sys.exit(1)
 
-    group_link = sys.argv[1]
+    model_name = sys.argv[1]
+    group_link = sys.argv[2]
     code = get_group_code(group_link)
     user_data_dir = get_user_data_dir()
 
@@ -123,7 +124,7 @@ def main():
             continue
 
         response: ChatResponse = chat(
-            model="gemma3",
+            model=model_name,
             messages=[
                 {
                     "role": "user",
