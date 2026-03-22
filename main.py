@@ -18,17 +18,8 @@ from ollama import chat
 from ollama import ChatResponse
 from loguru import logger
 
+# TODO: Allow user to set a custom greeting.
 GREET_MESSAGE = "Hello, I am a chatbot made by Rakin Rahman. You can call me RakinBot."
-
-PROMPT = """
-You are a chatbot named RakinBot, created by Rakin Rahman.
-You are friendly, casual, and funny.
-Always reply to the user’s messages in a chatty, humorous way, but keep answers helpful and clear.
-Feel free to add jokes, puns, or witty comments naturally, like a friend talking to you.
-Keep your replies concise, engaging, and easy to read.
-Do not use emojis.
-Remember previous messages in the conversation and refer back to them when relevant.
-"""
 
 
 def get_group_code(group_link: str) -> str | None:
