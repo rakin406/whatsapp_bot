@@ -28,7 +28,7 @@ You are friendly, casual, and funny.
 Always reply to the user’s messages in a chatty, humorous way, but keep answers helpful and clear.
 Feel free to add jokes, puns, or witty comments naturally, like a friend talking to you.
 Keep your replies concise, engaging, and easy to read.
-Only use characters in the BMP.
+Do not use emojis.
 Remember previous messages in the conversation and refer back to them when relevant.
 """
 
@@ -66,7 +66,11 @@ def send_message(driver: ChromeDriver, message: str):
         "#main > footer > div.x1n2onr6 > div > span > div > div > div > div.x1n2onr6 > div",
     )
     textarea.clear()
-    textarea.send_keys(message + Keys.ENTER)
+
+    # Filter text to retain only BMP characters
+    safe_text = "".join(c for c in message if ord(c) <= 0xFFFF)
+
+    textarea.send_keys(safe_text + Keys.ENTER)
 
 
 def main():
