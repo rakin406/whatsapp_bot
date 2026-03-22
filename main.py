@@ -55,7 +55,7 @@ def get_user_data_dir() -> str | None:
 
 def get_last_message(driver: ChromeDriver) -> str:
     messages = driver.find_elements(
-        By.CSS_SELECTOR, "span[data-testid='selectable-text']"
+        By.CSS_SELECTOR, "div.message-in span[data-testid='selectable-text']"
     )
     return messages[-1].text
 
