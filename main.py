@@ -14,7 +14,7 @@ from selenium.webdriver.chrome.webdriver import WebDriver as ChromeDriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from google.genai import Client, types
+from google import genai
 from loguru import logger
 
 load_dotenv()
@@ -85,9 +85,13 @@ def main():
         sys.exit(3)
 
     # Create Gemini client
-    logger.debug("Initializing Gemini client")
-    gemini_client = Client()
-    logger.info("Initialized Gemini client")
+    logger.debug("Initializing Gemini chat session")
+    client = genai.Client()
+    chat = client.chats.create(
+        model="gemini-3-flash-preview",
+        history=[{"role": "user", "parts": [{"text": PROMPT}]}],
+    )
+    logger.info("Initialized Gemini chat session")
 
     # Set Chromium options
     options = Options()
@@ -117,7 +121,10 @@ def main():
         if msg == last_msg:
             continue
 
-        # TODO: Give message prompt to Gemini.
+        response = chat.send_message(msg)
+
+        if response.text:
+            send_message(driver, response.text)
 
         last_msg = msg
 
