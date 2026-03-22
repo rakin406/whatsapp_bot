@@ -99,6 +99,10 @@ def main():
     options.add_argument(f"--user-data-dir={user_data_dir}")
     options.add_argument(f"--profile-directory=Default")
     options.add_argument("--headless=new")  # Run headless
+    options.add_argument(
+        "--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+    )  # Set user agent
     options.add_argument("--no-sandbox")  # Useful for containers
     options.add_argument("--disable-gpu")
     options.add_argument("--window-size=1920,1080")
