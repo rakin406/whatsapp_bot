@@ -7,11 +7,11 @@ import os
 import sys
 import platform
 import re
-from webbrowser import Chrome
 
 from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver as ChromeDriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from loguru import logger
 
@@ -41,6 +41,15 @@ def get_last_message(driver: ChromeDriver) -> str:
         By.CSS_SELECTOR, "span[data-testid='selectable-text']"
     )
     return messages[-1].text
+
+
+def send_message(driver: ChromeDriver, message: str):
+    textarea = driver.find_element(
+        By.CSS_SELECTOR,
+        "#main > footer > div.x1n2onr6.xhtitgo.x9f619.x78zum5.x1q0g3np.xuk3077.xjbqb8w.x1wiwyrm.xquzyny.xvc5jky.x11t971q.xnpuxes.copyable-area > div > span > div > div > div > div.x1n2onr6.xh8yej3.xjdcl3y.lexical-rich-text-input > div.x1hx0egp.x6ikm8r.x1odjw0f.x1k6rcq7.x6prxxf",
+    )
+    textarea.clear()
+    textarea.send_keys(message + Keys.ENTER)
 
 
 def main():
@@ -84,7 +93,10 @@ def main():
         if msg == last_msg:
             continue
 
-        print(msg)
+        send_message(
+            driver,
+            "Hello, I am the experimental chatbot made by Rakin Rahman. You can call me RakinBot.",
+        )
         last_msg = msg
 
 
