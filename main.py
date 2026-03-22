@@ -101,6 +101,7 @@ def main():
     options.add_argument("--headless=new")  # Run headless
     options.add_argument("--no-sandbox")  # Useful for containers
     options.add_argument("--disable-gpu")
+    options.add_argument("--window-size=1920,1080")
 
     # Open Chromium
     logger.debug("Initializing ChromeDriver")
