@@ -7,9 +7,12 @@ import os
 import sys
 import platform
 import re
+from webbrowser import Chrome
 
 from selenium import webdriver
+from selenium.webdriver.chrome.webdriver import WebDriver as ChromeDriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
 from loguru import logger
 
 
@@ -33,6 +36,13 @@ def get_user_data_dir() -> str | None:
     return user_data_dir
 
 
+def get_last_message(driver: ChromeDriver) -> str:
+    messages = driver.find_elements(
+        By.CSS_SELECTOR, "span[data-testid='selectable-text']"
+    )
+    return messages[-1].text
+
+
 def main():
     if len(sys.argv) <= 1:
         print("Please give the group link.")
@@ -53,24 +63,29 @@ def main():
     options = Options()
     options.add_argument(f"--user-data-dir={user_data_dir}")
     options.add_argument(f"--profile-directory=Default")
-    options.add_experimental_option("detach", True)
 
-    # Open chrome
+    # Open Chromium
     logger.debug("Initializing ChromeDriver")
     driver = webdriver.Chrome(options=options)
     logger.info("Initialized ChromeDriver")
 
     driver.implicitly_wait(10)
 
-    # Go to whatsapp link
-    logger.debug("Navigating to link")
-    driver.get(group_link)
-    logger.info("Navigated to link")
+    # Open whatsapp group chat
+    logger.debug("Opening chat")
+    chat_url = f"https://web.whatsapp.com/accept?code={code}"
+    driver.get(chat_url)
+    logger.info("Opened chat")
 
-    # Quit chrome
-    # logger.debug("Stopping ChromeDriver")
-    # driver.quit()
-    # logger.info("Stopped ChromeDriver")
+    last_msg = ""
+
+    while True:
+        msg = get_last_message(driver)
+        if msg == last_msg:
+            continue
+
+        print(msg)
+        last_msg = msg
 
 
 if __name__ == "__main__":
