@@ -8,12 +8,16 @@ import sys
 import platform
 import re
 
+from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver as ChromeDriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from google.genai import Client, types
 from loguru import logger
+
+load_dotenv()
 
 GREET_MESSAGE = """\
 Hello, I am a chatbot made by Rakin Rahman. You can call me RakinBot.\
