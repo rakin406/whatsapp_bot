@@ -98,6 +98,9 @@ def main():
     options = Options()
     options.add_argument(f"--user-data-dir={user_data_dir}")
     options.add_argument(f"--profile-directory=Default")
+    options.add_argument("--headless=new")  # Run headless
+    options.add_argument("--no-sandbox")  # Useful for containers
+    options.add_argument("--disable-gpu")
 
     # Open Chromium
     logger.debug("Initializing ChromeDriver")
