@@ -42,11 +42,11 @@ def get_user_data_dir() -> str | None:
     return user_data_dir
 
 
-def get_last_message(driver: ChromeDriver) -> str:
+def get_last_message(driver: ChromeDriver) -> str | None:
     messages = driver.find_elements(
         By.CSS_SELECTOR, "div.message-in span[data-testid='selectable-text']"
     )
-    return messages[-1].text
+    return messages[-1].text if messages else None
 
 
 def send_message(driver: ChromeDriver, message: str):
@@ -119,7 +119,7 @@ def main():
     while True:
         msg = get_last_message(driver)
 
-        if msg == last_msg:
+        if not msg or msg == last_msg:
             time.sleep(1)
             continue
 
