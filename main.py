@@ -5,6 +5,7 @@ Usage: ./main.py <group-link>
 
 import os
 import sys
+import time
 import platform
 import re
 
@@ -89,7 +90,7 @@ def main():
     logger.debug("Initializing Gemini chat session")
     client = genai.Client()
     chat = client.chats.create(
-        model="gemini-3-flash-preview",
+        model="gemini-2.5-flash",
         history=[{"role": "user", "parts": [{"text": PROMPT}]}],
     )
     logger.info("Initialized Gemini chat session")
@@ -132,7 +133,9 @@ def main():
 
     while True:
         msg = get_last_message(driver)
+
         if msg == last_msg:
+            time.sleep(1)
             continue
 
         response = chat.send_message(msg)
@@ -141,6 +144,7 @@ def main():
             send_message(driver, response.text)
 
         last_msg = msg
+        time.sleep(1)
 
 
 if __name__ == "__main__":
