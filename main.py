@@ -9,16 +9,14 @@ import time
 import platform
 import re
 
-from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver as ChromeDriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from google import genai
+from ollama import chat
+from ollama import ChatResponse
 from loguru import logger
-
-load_dotenv()
 
 GREET_MESSAGE = "Hello, I am a chatbot made by Rakin Rahman. You can call me RakinBot."
 
@@ -90,15 +88,6 @@ def main():
         print("Could not retrieve user data")
         sys.exit(3)
 
-    # Create Gemini client
-    logger.debug("Initializing Gemini chat session")
-    client = genai.Client()
-    chat = client.chats.create(
-        model="gemini-2.5-flash",
-        history=[{"role": "user", "parts": [{"text": PROMPT}]}],
-    )
-    logger.info("Initialized Gemini chat session")
-
     # Set Chromium options
     options = Options()
     options.add_argument(f"--user-data-dir={user_data_dir}")
@@ -142,10 +131,18 @@ def main():
             time.sleep(1)
             continue
 
-        response = chat.send_message(msg)
+        response: ChatResponse = chat(
+            model="gemma3",
+            messages=[
+                {
+                    "role": "user",
+                    "content": msg,
+                },
+            ],
+        )
 
-        if response.text:
-            send_message(driver, response.text)
+        if response.message.content:
+            send_message(driver, response.message.content)
 
         last_msg = msg
         time.sleep(1)
