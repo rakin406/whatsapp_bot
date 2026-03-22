@@ -133,7 +133,7 @@ def main():
     # Greet
     send_message(driver, GREET_MESSAGE)
     logger.info("Sent greet message")
-    last_msg = GREET_MESSAGE
+    last_msg = ""
 
     while True:
         msg = get_last_message(driver)
