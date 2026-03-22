@@ -77,6 +77,11 @@ def main():
         print("Could not retrieve user data")
         sys.exit(3)
 
+    # Create Gemini client
+    logger.debug("Initializing Gemini client")
+    gemini_client = Client()
+    logger.info("Initialized Gemini client")
+
     options = Options()
     options.add_argument(f"--user-data-dir={user_data_dir}")
     options.add_argument(f"--profile-directory=Default")
