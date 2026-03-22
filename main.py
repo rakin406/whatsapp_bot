@@ -102,6 +102,11 @@ def main():
     options.add_argument("--no-sandbox")  # Useful for containers
     options.add_argument("--disable-gpu")
     options.add_argument("--window-size=1920,1080")
+    options.add_argument("--force-device-scale-factor=1")  # Ensures scaling
+    options.add_argument("--enable-automation")
+    options.add_argument(
+        "--disable-blink-features=AutomationControlled"
+    )  # Reduces detection
 
     # Open Chromium
     logger.debug("Initializing ChromeDriver")
