@@ -15,6 +15,10 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from loguru import logger
 
+GREET_MESSAGE = """\
+Hello, I am a chatbot made by Rakin Rahman. You can call me RakinBot.\
+"""
+
 
 def get_group_code(group_link: str) -> str | None:
     match = re.search(r"chat\.whatsapp\.com/([A-Za-z0-9]+)", group_link)
@@ -86,17 +90,18 @@ def main():
     driver.get(chat_url)
     logger.info("Opened chat")
 
-    last_msg = ""
+    # Greet
+    send_message(driver, GREET_MESSAGE)
+    logger.info("Sent greet message")
+    last_msg = GREET_MESSAGE
 
     while True:
         msg = get_last_message(driver)
         if msg == last_msg:
             continue
 
-        send_message(
-            driver,
-            "Hello, I am the experimental chatbot made by Rakin Rahman. You can call me RakinBot.",
-        )
+        # TODO: Give message prompt to Gemini.
+
         last_msg = msg
 
 
